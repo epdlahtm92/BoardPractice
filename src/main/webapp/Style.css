@@ -1,0 +1,6 @@
+@charset "UTF-8";
+	table {border-collapse: collapse;}
+	thead td { font-weight:bold; font-size:1.2em; background-color: #107C10; color:white;}
+	td.leftIndex {font-weight:bold; font-size:1.2em; background-color:  #00A4EF; color:white; text-align:center;}
+	td {border: 1px dotted #3A3A3A; padding:5px 15px; text-align:center;}
+	td textarea {font-size:1.1em;}
