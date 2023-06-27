@@ -11,15 +11,15 @@
 			}
 			
 			BoardDao boardDao = new BoardDaoImpl(); // 클래스 객체 선언
-			RecordOnBoard recordOnBoard = boardDao.selectOne(id);
-			String res = boardDao.deleteOne(id, recordOnBoard.getRe_level(), recordOnBoard.getRe_order());
+			RecordOnBoard recordOnBoard = boardDao.selectOne(id); // 하나 선택하는 메서드 호출
+			String res = boardDao.deleteOne(id, recordOnBoard.getRe_level(), recordOnBoard.getRe_order()); // 레코드 삭제하는 메서드 호출
 		%>
 		<style>@import "./Style.css";</style><!-- css 파일 임포트 -->
-		<title>글 지우기</title>
+		<title>글 지우기</title> <!--  타이틀 -->
 	</head>
 	<body>
-		<%=res %>
+		<%=res %> <!-- 결과 출력 -->
 		<br>
-		<button onclick="location.href='./ShowList.jsp'">목록</button>
+		<button onclick="location.href='./ShowList.jsp'">목록</button> <!--  돌아가기 버튼 -->
 	</body>
 </html>

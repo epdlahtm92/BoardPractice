@@ -4,8 +4,10 @@
 <%@ page import="kopo17.service.*" %> <!-- 서비스 임포트 -->
 <%@ page import="kopo17.dto.*" %> <!-- dto 임포트 -->
 
+<%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %> <!-- 리스트 임포트 -->
 <%@ page import="java.util.ArrayList" %> <!-- 어레이 리스트 임포트 -->
+<%@ page import="java.text.SimpleDateFormat" %>
 <% request.setCharacterEncoding("utf-8"); %> <!-- 파라미터 인코딩 -->
 
 <!DOCTYPE html>
@@ -19,6 +21,8 @@
 			BoardDao boardDao = new BoardDaoImpl(); // dao 클래스 객체 선언
 			BoardService boardService = new BoardServiceImpl();
 			List<RecordOnBoard> selectAllList = boardDao.selectAll(); // 전체조회 메서드 호출
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
 			int countPerPage = 10; // 페이지당 레코드 수 변수
 			if (request.getParameter("countPerPage") != null) { // 파라미터로 받아오기
@@ -26,31 +30,31 @@
 			}
 			
 			String newRecord = null;
-			if (request.getParameter("new") != null){
+			if (request.getParameter("new") != null){ // 파라미터로 받아오기
 				newRecord = request.getParameter("new");
 			}
 			
 			int id = 0;
 			int pages = 0; // 페이지 계산용 변수
 			if (request.getParameter("id") != null && request.getParameter("page") != null) { // 페이지 파라미터로 받아오기
-				pages = Integer.parseInt(request.getParameter("page")); // 파파미터 값 대입하기
-				id = Integer.parseInt(request.getParameter("id"));
-			} else if (request.getParameter("id") != null && request.getParameter("page") == null) {
-				id = Integer.parseInt(request.getParameter("id"));
+				pages = Integer.parseInt(request.getParameter("page")); // 파라미터 값 대입하기
+				id = Integer.parseInt(request.getParameter("id")); // 파라미터 값 대입하기
+			} else if (request.getParameter("id") != null && request.getParameter("page") == null) { //아이디 값은 있지만 페이지는 없을때
+				id = Integer.parseInt(request.getParameter("id")); // 파라미터 값 대입하기
 				int idCnt = 0;
 				int idPage = 0;
-				for (RecordOnBoard recordOnBoard : selectAllList){
+				for (RecordOnBoard recordOnBoard : selectAllList){// 전체 읽어들여서
 					idCnt++;
-					if (recordOnBoard.getId() == id){
-						if (idCnt % countPerPage == 0) {
-							idPage = ((idCnt - 1)/countPerPage) + 1;
+					if (recordOnBoard.getId() == id){ // 현재 아이디의
+						if (idCnt % countPerPage == 0) { //페이지 위치 계산
+							idPage = ((idCnt - 1)/countPerPage) + 1; //페이지가 10의 배수일때 예외 처리
 						} else {
-							idPage = (idCnt/countPerPage) + 1;
+							idPage = (idCnt/countPerPage) + 1; // 페이지 위치 계산
 						}
 						break;
 					}
 				}
-				pages = idPage;
+				pages = idPage; //페이지 변수 대입
 			} else if (request.getParameter("id") == null && request.getParameter("page") != null) {
 				pages = Integer.parseInt(request.getParameter("page")); // 파파미터 값 대입하기
 			}
@@ -69,19 +73,25 @@
 				<%
 					int count = 0;
 					for(RecordOnBoard recordOnBoard: selectAllList){// 반복하면서
+						
 						String title = "";
-						for(int i = 0; i < recordOnBoard.getRe_level(); i++){
-							title += "-";
+						for(int i = 0; i < recordOnBoard.getRe_level(); i++){ // 댓글 레벨 수준 만큼
+							title += "-"; // - 넣기
 						}
-						title = title + ">[Re] ";
+						title = title + ">[Re] "; // 마지막에 붙여주기
+						
+						String cutTitle = recordOnBoard.getTitle();
+						if(cutTitle.length() > 20){
+							cutTitle = recordOnBoard.getTitle().substring(0, 20) + "...";
+						} 
 						
 						if (count >= ((pagination.getC() - 1) * countPerPage) && count < (pagination.getC() * countPerPage)){ // 원하는 페이지만 출력하는 조건
-							if (recordOnBoard.getId() == id && newRecord.equals("new")){
+							if (sdf.format(now).equals(recordOnBoard.getRecord_date())){
 								out.println("<tr><td class='leftIndex'><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "'>" + recordOnBoard.getId() + "</a></td>"); //글 아이디
 								if (recordOnBoard.getRe_level() != 0){
-									out.println("<td><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "&root_id=" + recordOnBoard.getRoot_id() + "'>" + title + recordOnBoard.getTitle() + "</a><span style='color:red;'> new!</span></td>"); // 글 제목
+									out.println("<td width=500 style='word-break:break-all;'><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "&root_id=" + recordOnBoard.getRoot_id() + "'>" + title + cutTitle + "</a><span style='color:red;'> new!</span></td>"); // 글 제목
 								} else {
-									out.println("<td><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "&root_id=" + recordOnBoard.getRoot_id() + "'>" + recordOnBoard.getTitle() + "</a><span style='color:red;'> new!</span></td>"); // 글 제목
+									out.println("<td width=500 style='word-break:break-all;'><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "&root_id=" + recordOnBoard.getRoot_id() + "'>" + cutTitle + "</a><span style='color:red;'> new!</span></td>"); // 글 제목
 								}
 								out.println("<td>" + recordOnBoard.getVisit_count() + "</td>"); // 방문자 수 표 안에 출력
 								out.println("<td>" + recordOnBoard.getRecord_date() + "</td></tr>"); // 작성일자 표 안에 출력
@@ -89,9 +99,9 @@
 							} else {
 								out.println("<tr><td class='leftIndex'><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "'>" + recordOnBoard.getId() + "</a></td>"); //글 아이디
 								if (recordOnBoard.getRe_level() != 0){
-									out.println("<td><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "&root_id=" + recordOnBoard.getRoot_id() + "'>" + title + recordOnBoard.getTitle() + "</a></span></td>"); // 글 제목
+									out.println("<td width=500 style='word-break:break-all;'><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "&root_id=" + recordOnBoard.getRoot_id() + "'>" + title + cutTitle + "</a></span></td>"); // 글 제목
 								} else {
-									out.println("<td><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "&root_id=" + recordOnBoard.getRoot_id() + "'>" + recordOnBoard.getTitle() + "</a></span></td>"); // 글 제목
+									out.println("<td width=500 style='word-break:break-all;'><a href='./SelectOne.jsp?id=" + recordOnBoard.getId() + "&root_id=" + recordOnBoard.getRoot_id() + "'>" + cutTitle + "</a></span></td>"); // 글 제목
 								}
 								out.println("<td>" + recordOnBoard.getVisit_count() + "</td>"); // 방문자 수 표 안에 출력
 								out.println("<td>" + recordOnBoard.getRecord_date() + "</td></tr>"); // 작성일자 표 안에 출력

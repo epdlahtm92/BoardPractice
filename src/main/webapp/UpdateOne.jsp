@@ -34,7 +34,7 @@
 	<body>
 		<%=res %><!--  결과 안내문 출력 -->
 		<br>
-		<button onclick="location.href='./InputMddForm.jsp?id=<%=id %>'">다시 쓰기</button> <!-- 돌아가기버튼 -->
+		<button onclick="location.href='./InputModForm.jsp?id=<%=id %>'">다시 쓰기</button> <!-- 돌아가기버튼 -->
 		<button onclick="location.href='./SelectOne.jsp?id=<%=id %>'">글 보기</button> <!-- 돌아가기버튼 -->
 		<button onclick="location.href='./ShowList.jsp'">글 목록</button> <!-- 글 목록 보기 버튼 -->
 	</body>

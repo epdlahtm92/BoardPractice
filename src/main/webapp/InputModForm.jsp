@@ -16,16 +16,16 @@
 		
 		}
 		
-		function spaceCheck(){
-			 var titleBox = document.getElementById("titleBox").value.trim();
-			 document.getElementById("titleBox").value = titleBox;
+		function spaceCheck(){ // 앞뒤 공간 삭제 펑션
+			 var titleBox = document.getElementById("titleBox").value.trim(); // 트림 메서도 사용
+			 document.getElementById("titleBox").value = titleBox; //대입
 		}
 		
-		function textCheck(){
-			var textareaStr = document.getElementById("content").value;
-			var titleBoxStr =  document.getElementById("titleBox").value;
-			document.getElementById("content").value = textareaStr.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("\\", "&#39;");
-			document.getElementById("titleBox").value = titleBoxStr.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("\\", "&#39;");
+		function textCheck(){ // 특수문자 변환펑션
+			var textareaStr = document.getElementById("content").value; // 값 찾아서 대입
+			var titleBoxStr =  document.getElementById("titleBox").value; // 값 찾아서 대입
+			document.getElementById("content").value = textareaStr.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("\\", "&#39;"); // 특수문자 변환
+			document.getElementById("titleBox").value = titleBoxStr.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("\\", "&#39;"); // 특수문자 변환
 			
 		}
 	</script>
@@ -43,20 +43,20 @@
 		<title>글 수정 하기</title>
 	</head>
 	<body>
-		<form method="post">
+		<form method="post"> <!-- 입력 폼 -->
 			<table>
 				<tbody>
-					<tr><td class="leftIndex">번호</td><td><input type="text" value=<%=recordOnBoard.getId() %> name="id" readonly></td></tr><!-- 아이디 받아오는 폼 -->
-					<tr><td class="leftIndex">제목</td><td><input type="text" name="title" pattern=".{1,100}" id="titleBox" value=<%=recordOnBoard.getTitle() %> required></td></tr> <!-- 제목 답아오는 폼 -->
-					<tr><td class="leftIndex">일자</td><td><input type="text" value=<%=recordOnBoard.getRecord_date() %> name="record_date" readonly></td></tr> <!-- 날짜 받아오는 폼 -->
-					<tr><td class="leftIndex">내용</td>
-						<td><textarea name="content" id="content" style="width:300px; height:300px;"><%=recordOnBoard.getContent() %></textarea></td></tr> <!-- 내용 입력하는 폼 -->
+					<tr><td class="leftIndex">번 호</td><td style="width:400px"><input type="text" value=<%=recordOnBoard.getId() %> name="id" readonly></td></tr><!-- 아이디 받아오는 폼 -->
+					<tr><td class="leftIndex">제 목</td><td><textarea name="title" maxlength="40" id="titleBox" required><%=recordOnBoard.getTitle() %></textarea></td></tr> <!-- 제목 답아오는 폼 -->
+					<tr><td class="leftIndex">일 자</td><td><input type="text" value=<%=recordOnBoard.getRecord_date() %> name="record_date" readonly></td></tr> <!-- 날짜 받아오는 폼 -->
+					<tr><td class="leftIndex">내 용</td>
+						<td><textarea name="content" id="content" style="height:300px;"><%=recordOnBoard.getContent() %></textarea></td></tr> <!-- 내용 입력하는 폼 -->
 				</tbody>
 				<tfoot>
 					<tr>
 						<td></td>
 						<td><button type="button" onclick="location.href='./ShowList.jsp'">목록</button> <!-- 전체 목록으로 돌아가는 버튼 -->
-							<input type="submit" onclick=spaceCheck();textCheck() formaction="./UpdateOne.jsp" value="글 수정 하기"> <!-- 수정하는 버튼 -->
+							<input style="width:90px;;" type="submit" onclick=spaceCheck();textCheck() formaction="./UpdateOne.jsp" value="글 수정 하기"> <!-- 수정하는 버튼 -->
 							<button type="button" onclick="location.href='./DeleteOne.jsp?id=<%=id %>'">삭제</button></td> <!-- 삭제하는 버튼 -->
 					</tr>
 				</tfoot>

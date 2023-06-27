@@ -13,18 +13,18 @@
 			}
 			
 			String newRecord = null;
-			if (request.getParameter("new") != null){
+			if (request.getParameter("new") != null){ // 파라미터 받아와서 변수에 대입
 				newRecord = request.getParameter("new");
 			}
 			
 			BoardDao boardDao = new BoardDaoImpl(); // 클래스 객체 선언
 			RecordOnBoard selectOne = boardDao.selectOne(id); // 하나만 조회하는 메서드 호출
 			
-			int root_id = 0;
-			if(selectOne.getRoot_id() == 0) {
-				root_id = selectOne.getId();
+			int root_id = 0; // 변수 초기화
+			if(selectOne.getRoot_id() == 0) { // 이 글이 원글이라면
+				root_id = selectOne.getId(); // 루트아이디 변수에 현재 글 번호 넘겨주기
 			} else {
-				root_id = selectOne.getRoot_id();// 아이디 변수 초기화
+				root_id = selectOne.getRoot_id();//댓글이라면 원글의 번호 넣기
 			}
 			
 		%>
@@ -33,18 +33,18 @@
 	<body>
 		<table>
 			<tbody>
-				<tr><td class="leftIndex">번호</td><td><%=selectOne.getId() %></td></tr> <!-- 호출한 메서드 값 출력 -->
+				<tr><td class="leftIndex">번호</td><td style="width:400px"><%=selectOne.getId() %></td></tr> <!-- 호출한 메서드 값 출력 -->
 				<%
-					if (selectOne.getRoot_id() != 0){
-						out.println("<tr><td class='leftIndex'>원글</td><td>" + selectOne.getRoot_id() + "</td></tr>");
-						out.println("<tr><td class='leftIndex'>댓글 수준</td><td>" + selectOne.getRe_level() + "</td></tr>");
-						out.println("<tr><td class='leftIndex'>댓글 내 순서</td><td>" + boardDao.replyOrderCount(selectOne.getRoot_id(), selectOne.getRe_level(), selectOne.getRe_order()) + "</td></tr>");
+					if (selectOne.getRoot_id() != 0){ // 원글이라면 생략할 부분
+						out.println("<tr><td class='leftIndex'>원글</td><td>" + selectOne.getRoot_id() + "</td></tr>"); // 원글 번호
+						out.println("<tr><td class='leftIndex'>댓글 수준</td><td>" + selectOne.getRe_level() + "</td></tr>"); // 댓글 수준
+						out.println("<tr><td class='leftIndex'>댓글내 순서</td><td>" + boardDao.replyOrderCount(selectOne.getRoot_id(), selectOne.getRe_level(), selectOne.getRe_order()) + "</td></tr>"); // 댓글 내 순서
 					} else {}
 				%>
-				<tr><td class="leftIndex">제목</td><td><%=selectOne.getTitle() %></td></tr> <!-- 호출한 메서드 값 출력 -->
-				<tr><td class="leftIndex">일자</td><td><%=selectOne.getRecord_date() %></td></tr> <!-- 호출한 메서드 값 출력 -->
+				<tr><td class="leftIndex">제 목</td><td><textarea style="border:0px; width:90%; text-align:center" rows="1" readonly><%=selectOne.getTitle() %></textarea></td></tr> <!-- 호출한 메서드 값 출력 -->
+				<tr><td class="leftIndex">일 자</td><td><%=selectOne.getRecord_date() %></td></tr> <!-- 호출한 메서드 값 출력 -->
 				<tr><td class="leftIndex">조회 수</td><td><%=selectOne.getVisit_count() %></td></tr> <!-- 호출한 메서드 값 출력 -->
-				<tr><td class="leftIndex">내용</td><td><textarea style="border:0px; width:300px; height:300px;"><%=selectOne.getContent() %></textarea></td></tr> <!-- 호출한 메서드 값 출력 -->
+				<tr><td class="leftIndex">내 용</td><td><textarea style="border:0px; width:90%; height:300px;"><%=selectOne.getContent() %></textarea></td></tr> <!-- 호출한 메서드 값 출력 -->
 			</tbody>
 			<tfoot>
 				<tr>

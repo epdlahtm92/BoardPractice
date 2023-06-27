@@ -23,30 +23,30 @@ public class BoardDaoImpl implements BoardDao{
 				Connection conn = DriverManager.getConnection(sqlUrl,sqlUser,sqlPassWd); // 커넥션
 				Statement stmt = conn.createStatement(); //스테이트먼트
 				
-				if (re_order == 0) {
-					stmt.execute("update board set re_order = re_order + 1;");
+				if (re_order == 0) { // 원글이라면
+					stmt.execute("update board set re_order = re_order + 1;"); // 나머지 글 순서 밀기
 				} else {
-					stmt.execute("update board set re_order = re_order+1 where re_order >=" + re_order + ";");
+					stmt.execute("update board set re_order = re_order+1 where re_order >=" + re_order + ";"); // 댓글일땐 이후 글 순서 밀기
 				}
 				
 				stmt.execute("insert into board (root_id, re_level, re_order, visit_count, title, content, record_date, modable) "
 							+ "values(" + root_id + ", " + re_level + ", " + re_order + ", 0, '" + title + "', '" + content + "', date(now()), 1);"); // 일렬번호 및 인자 넣어서 새 글 작성 쿼리 실행
 				
-				ResultSet rset = stmt.executeQuery("select max(id) from board;");
+				ResultSet rset = stmt.executeQuery("select max(id) from board;"); // 마지막으로 추가한 아이디 보기
 				rset.next();
-				int id = rset.getInt(1);
+				int id = rset.getInt(1); //아이디 대입
 				
 				stmt.close(); // 스테이트먼트 종료
-				rset.close();
+				rset.close(); // 리절트셋 종료
 				conn.close(); // 커넥션 종료
 				
-				String[] res = {"글 쓰기 완료", Integer.toString(id)};
+				String[] res = {"글 쓰기 완료", Integer.toString(id)}; // 결과 반환
 				return res; //과정 완료 후 리턴 할 문구
 				
 			} catch (Exception e) { // 예외 처리
 				e.printStackTrace(); //예외 출력
 				
-				String[] resError = {"글 쓰기 실패", "-1"};
+				String[] resError = {"글 쓰기 실패", "-1"}; // 결과 반환
 				return resError; // 과정 실패 후 출력할 문구
 			}		
 		}
@@ -67,14 +67,14 @@ public class BoardDaoImpl implements BoardDao{
 				while (rset.next()) { // 리절트셋 
 					RecordOnBoard recordOnBoard = new RecordOnBoard(); // 도메인 클래스 객체 선언
 					recordOnBoard.setId(rset.getInt(1)); // 일렬번호 구해서 세터로 넣기
-					recordOnBoard.setRoot_id(rset.getInt(2));
-					recordOnBoard.setRe_level(rset.getInt(3));
-					recordOnBoard.setRe_order(rset.getInt(4));
-					recordOnBoard.setVisit_count(rset.getInt(5));
+					recordOnBoard.setRoot_id(rset.getInt(2)); //세터로 변수 넣기
+					recordOnBoard.setRe_level(rset.getInt(3)); //세터로 변수 넣기
+					recordOnBoard.setRe_order(rset.getInt(4)); //세터로 변수 넣기
+					recordOnBoard.setVisit_count(rset.getInt(5)); //세터로 변수 넣기
 					recordOnBoard.setTitle(rset.getString(6)); // 타이틀 구해서 세터로 넣기
 					recordOnBoard.setContent(rset.getString(7)); // 내용 구해서 세터로 넣기
 					recordOnBoard.setRecord_date(rset.getString(8)); // 날짜 구해서 세터로 넣기
-					recordOnBoard.setModable(rset.getInt(9));
+					recordOnBoard.setModable(rset.getInt(9)); //세터로 변수 넣기
 					
 					RecordOnBoardList.add(recordOnBoard); // 넣은 클래스 리스트에 넣기
 				}
@@ -107,10 +107,10 @@ public class BoardDaoImpl implements BoardDao{
 				ResultSet rset = stmt.executeQuery("select * from board where id = " + id + ";"); // 일렬번호 구하는 쿼리문 실행
 				rset.next(); // 리절트셋 
 					recordOnBoard.setId(rset.getInt(1)); // 일렬번호 구해서 세터로 넣기
-					recordOnBoard.setRoot_id(rset.getInt(2));
-					recordOnBoard.setRe_level(rset.getInt(3));
-					recordOnBoard.setRe_order(rset.getInt(4));
-					recordOnBoard.setVisit_count(rset.getInt(5));
+					recordOnBoard.setRoot_id(rset.getInt(2)); //세터로 변수 넣기
+					recordOnBoard.setRe_level(rset.getInt(3)); //세터로 변수 넣기
+					recordOnBoard.setRe_order(rset.getInt(4)); //세터로 변수 넣기
+					recordOnBoard.setVisit_count(rset.getInt(5)); //세터로 변수 넣기
 					recordOnBoard.setTitle(rset.getString(6)); // 타이틀 구해서 세터로 넣기
 					recordOnBoard.setContent(rset.getString(7)); // 내용 구해서 세터로 넣기
 					recordOnBoard.setRecord_date(rset.getString(8)); // 날짜 구해서 세터로 넣기
@@ -192,16 +192,16 @@ public class BoardDaoImpl implements BoardDao{
 				Statement stmt = conn.createStatement(); //스테이트먼트
 				
 				if (re_level != 0) {
-					stmt.execute("update board set title = '삭제된 댓글입니다.', content = '삭제된 댓글입니다.', modable=false where id =" + id + ";");
+					stmt.execute("update board set title = '삭제된 댓글입니다.', content = '삭제된 댓글입니다.', modable=false where id =" + id + ";"); // 댓글이라면 제목과 내용 변환
 					
 				} else {
-					ResultSet rset = stmt.executeQuery("select count(*) from board where id = " + id + " or root_id =" + id + ";");
+					ResultSet rset = stmt.executeQuery("select count(*) from board where id = " + id + " or root_id =" + id + ";"); // 댓글이 아닐땐 지워지는 개수 계산
 					rset.next();
-					int cnt = rset.getInt(1);
+					int cnt = rset.getInt(1); // 대입
 					
 					stmt.execute("delete from board where id =" + id + " or root_id = " + id + ";"); // 레코드 삭제하는 쿼리문 실행
 					
-					stmt.execute("update board set re_order=re_order - " + cnt + " where re_order > " + re_order + ";");
+					stmt.execute("update board set re_order=re_order - " + cnt + " where re_order > " + re_order + ";"); // 순서 재정령 쿼리문 실행
 					
 					rset.close();
 				}
@@ -219,7 +219,7 @@ public class BoardDaoImpl implements BoardDao{
 		}
 
 		@Override
-		public int replyOrderCount(int root_id, int re_level, int re_order) {
+		public int replyOrderCount(int root_id, int re_level, int re_order) { 
 			// TODO Auto-generated method stub
 			
 			try {

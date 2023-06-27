@@ -10,7 +10,7 @@ public class RecordOnBoard {
 	private String title; // 전역변수 설정
 	private String content; // 전역변수 설정
 	private String record_date; // 전역변수 설정
-	private boolean modable;
+	private boolean modable; // 전역변수 설정
 	
 	//게터 세터 설정
 	public int getId() {
